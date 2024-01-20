@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Word Guessing Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Word Guessing Game</h1>
+    <p id="wordDisplay">_ _ _ _ _ _ _</p>
+    <p>Wrong guesses: <span id="wrongGuesses"></span></p>
+    <input type="text" id="letterInput" maxlength="1">
+    <button onclick="guessLetter()">Guess</button>
+    <p id="gameStatus"></p>
+
+    <script>
+        const word = 'Insight'.toUpperCase();
+        let displayedWord = '_ '.repeat(word.length).trim();
+        let wrongGuesses = '';
+        let remainingGuesses = 6; // Adjust number of guesses as needed
+
+        document.getElementById('wordDisplay').textContent = displayedWord;
+
+        function guessLetter() {
+            let inputField = document.getElementById('letterInput');
+            let guessedLetter = inputField.value.toUpperCase();
+            inputField.value = ''; // Clear the input field
+
+            if (guessedLetter.length !== 1 || !guessedLetter.match(/[A-Z]/i)) {
+                alert('Please enter a valid letter.');
+                return;
+            }
+
+            if (word.includes(guessedLetter)) {
+                updateDisplayedWord(guessedLetter);
+            } else {
+                if (!wrongGuesses.includes(guessedLetter)) {
+                    wrongGuesses += guessedLetter + ' ';
+                    document.getElementById('wrongGuesses').textContent = wrongGuesses;
+                    remainingGuesses--;
+                }
+            }
+
+            checkGameStatus();
+        }
+
+        function updateDisplayedWord(letter) {
+            let newDisplay = '';
+            for (let i = 0; i < word.length; i++) {
+                if (word[i] === letter) {
+                    newDisplay += letter + ' ';
+                } else {
+                    newDisplay += displayedWord[i * 2] + ' ';
+                }
+            }
+            displayedWord = newDisplay.trim();
+            document.getElementById('wordDisplay').textContent = displayedWord;
+        }
+
+        function checkGameStatus() {
+            if (!displayedWord.includes('_')) {
+                document.getElementById('gameStatus').textContent = 'Congratulations! You guessed the word!';
+            } else if (remainingGuesses <= 0) {
+                document.getElementById('gameStatus').textContent = 'Game Over. The word was ' + word;
+            }
+        }
+
+    </script>
+</body>
+</html>
